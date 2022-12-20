@@ -13,13 +13,13 @@ if (isset($_SESSION['user_id'])) {
 $CONFIG['full_name'] = "Xtreme Clean and Carpet Care";
 $CONFIG['site_name'] = "XCCC";
 $CONFIG['site_info'] = "Service Provider";
-$CONFIG['inst_contact'] = "0000000000";
-$CONFIG['inst_contact2'] = "";
-$CONFIG['inst_email'] = "";
-$CONFIG['inst_logo'] = "";
+$CONFIG['site_contact'] = "0000000000";
+$CONFIG['site_contact2'] = "";
+$CONFIG['site_email'] = "";
+$CONFIG['site_logo'] = "";
 $CONFIG['white_logo'] = "";
 $CONFIG['banner'] = "";
-$CONFIG['inst_url'] = "http://127.0.0.1/xccc";
+$CONFIG['inst_url'] = "http://127.0.0.1/xtreme-clean";
 $CONFIG['inst_type'] = "Service Provider";
 $CONFIG['sender_id'] = "";
 $CONFIG['noreply_email'] = "";
@@ -49,7 +49,7 @@ $CONFIG['dev_contact'] = "";
 $CONFIG['host_name'] = 'localhost';
 $CONFIG['db_user'] = 'root';
 $CONFIG['db_password'] = '';
-$CONFIG['db_name'] = 'Xtreme_db';
+$CONFIG['db_name'] = 'xstream_service';
 $CONFIG['base_url'] = 'https://app.breezeway.io/rep/schedule';
 
 /*-------End of Basic Details ---------*/

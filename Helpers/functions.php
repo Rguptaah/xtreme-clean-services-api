@@ -1,5 +1,5 @@
 <?php
-require_once('op_lib.php');
+require_once('lib.php');
 function invopen($customer_id)
 {
     global $con;
@@ -129,7 +129,6 @@ function invoicecost($sale_id)
             $product_id = $item['product_id'];
             $qty = $item['product_qty'];
             $p_rate = get_data('op_purchase_item', $product_id, 'product_rate', 'product_id')['data'];
-
             $amt = $p_rate * $qty;
             $t_amt = $t_amt + $amt;
         }

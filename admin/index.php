@@ -10,7 +10,7 @@
         <div class="page-header">
             <div class="row">
                 <div class="col-12">
-                    <h3 class="page-title">Welcome Admin!</h3>
+                    <h3 class="page-title">Welcome <?= $user_id; ?>! </h3>
                 </div>
             </div>
         </div>

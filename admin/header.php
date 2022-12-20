@@ -1,13 +1,18 @@
-<?php require_once('lib.php'); ?>
+<?php
+require_once('../Helpers/lib.php');
+// $_SESSION['user_id'] = "user";
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == null) {
+    header("location:login.php");
+}
+extract($CONFIG);
+?>
 <!DOCTYPE html>
 <html lang="en">
-
-<!-- Mirrored from truelysell-admin.dreamguystech.com/template/admin-profile.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 20 Dec 2022 05:04:58 GMT -->
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <title>Truelysell | Template</title>
+    <title><?= $full_name; ?></title>
 
     <link rel="shortcut icon" href="assets/img/favicon.png">
 
@@ -26,7 +31,7 @@
 
         <div class="header">
             <div class="header-left">
-                <a href="index.html" class="logo logo-small">
+                <a href="index.php" class="logo logo-small">
                     <img src="assets/img/logo-icon.png" alt="Logo" width="30" height="30">
                 </a>
             </div>
@@ -42,7 +47,7 @@
                     <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
                         <i class="far fa-bell"></i> <span class="badge badge-pill"></span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right notifications">
+                    <!-- <div class="dropdown-menu dropdown-menu-right notifications">
                         <div class="topnav-dropdown-header">
                             <span class="notification-title">Notifications</span>
                             <a href="javascript:void(0)" class="clear-noti"> Clear All </a>
@@ -50,7 +55,7 @@
                         <div class="noti-content">
                             <ul class="notification-list">
                                 <li class="notification-message">
-                                    <a href="admin-notification.html">
+                                    <a href="admin-notification.php">
                                         <div class="media">
                                             <span class="avatar avatar-sm">
                                                 <img class="avatar-img rounded-circle" alt="" src="assets/img/provider/provider-01.jpg">
@@ -173,7 +178,7 @@
                         <div class="topnav-dropdown-footer">
                             <a href="admin-notification.html">View all Notifications</a>
                         </div>
-                    </div>
+                    </div> -->
                 </li>
 
 
@@ -184,8 +189,8 @@
                         </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="admin-profile.html">Profile</a>
-                        <a class="dropdown-item" href="login.html">Logout</a>
+                        <a class="dropdown-item" href="admin-profile.php">Profile</a>
+                        <a class="dropdown-item" href="logout.php">Logout</a>
                     </div>
                 </li>
 

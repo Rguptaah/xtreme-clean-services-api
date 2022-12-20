@@ -46,7 +46,7 @@ function get_whois($domain_name)
     return $data;
 }
 
-print_r(get_whois('codeflies.com'));
+// print_r(get_whois('codeflies.com'));
 function create_table($table_name)
 {
     global $con;
