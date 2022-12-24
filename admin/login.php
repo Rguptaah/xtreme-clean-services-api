@@ -53,7 +53,7 @@ if (isset($_SESSION['user_id'])) {
                             </div>
                         </form>
                         <div class="text-center forgotpass mt-4"><a href="forgot-password.php">Forgot Password?</a></div>
-                        <div class="text-center dont-have">Don’t have an account? <a href="register.php">Register</a></div>
+                        <!-- <div class="text-center dont-have">Don’t have an account? <a href="register.php">Register</a></div> -->
                     </div>
                 </div>
             </div>

@@ -406,11 +406,11 @@ function insert_html($table_name, $ArrayData)
 function update_data($table_name, $ArrayData, $id, $pkey = 'id')
 {
     global $con;
-    global $user_id;
-    global $current_date_time;
+    // global $user_id;
+    // global $current_date_time;
 
-    $ArrayData['updated_at'] = $current_date_time;
-    $ArrayData['updated_by'] = $user_id;
+    // $ArrayData['updated_at'] = $current_date_time;
+    // $ArrayData['updated_by'] = $user_id;
 
     $cols = array();
     foreach ($ArrayData as $key => $value) {

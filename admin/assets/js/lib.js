@@ -1,5 +1,42 @@
 /* Custom Js By Codeflies*/
 
+//==========EDIT USER FORM================//
+$('#edit-user').click(function (e) {
+    e.preventDefault();
+    $('#edit_user_form').validate();
+    if ($("#edit_user_form").valid()) {
+        var task = $("#edit_user_form").attr('action');
+        $(this).attr("disabled", true);
+        $(this).html("<i class='fa fa-refresh fa-spin'></i> Please Wait...");
+        var data = $("#edit_user_form").serialize();
+        $.ajax({
+            'type': 'POST',
+            'url': 'api.php?task=' + task,
+            'data': data,
+            success: function (data) {
+                console.log(data);
+                //alert(data);
+                var obj = JSON.parse(data);
+                if (obj.url != null) {
+                    bootbox.alert(obj.msg, function () {
+                        window.location.replace(obj.url);
+                    });
+                }
+                else {
+                    $.notify(obj.msg, obj.status);
+                    $("#edit-user").html(" <i class='fa fa-check-circle'></i> Saved Succesfully");
+                    location.reload(true);
+                }
+                $('#edit_user_form')[0].reset();
+                setTimeout(function () {
+                    $("#edit-user").attr("disabled", false);
+                    $("#edit-user").html("Save");
+                }, 2000);
+            }
+        });
+    }
+})
+
 //=====INSERT BUTTON =========//
 $("#insert_btn").on('click', function () {
 

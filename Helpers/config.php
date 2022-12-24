@@ -54,4 +54,9 @@ $CONFIG['base_url'] = 'https://app.breezeway.io/rep/schedule';
 
 /*-------End of Basic Details ---------*/
 
+/*------------ Details of API -----------------*/
+$CONFIG['status'] = ['pending' => 'Pending', 'active' => 'Active', 'blocked' => 'Blocked'];
+$CONFIG['role'] = ['A' => 'Admin', 'S' => 'Staff', 'U' => 'Customer'];
+$CONFIG['priority'] = ['low' => 'LOW', 'medium' => 'Medium', 'high' => 'HIGH'];
+$CONFIG['task_status'] = ['overdue' => 'OVERDUE', 'pending' => 'PENDING', 'active' => 'ACTIVE', 'finished' => 'FINISHED'];
 extract($CONFIG);

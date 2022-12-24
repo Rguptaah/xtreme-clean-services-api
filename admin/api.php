@@ -99,9 +99,10 @@ if (isset($_GET['task'])) {
             }
             echo json_encode($res);
             break;
-        case "edit_user":
+        case "edit-user":
             //print_r($_POST);
             $res = update_data('user', $_POST, $_POST['id']);
+            echo json_encode($res);
             break;
 
             /*------NEW TASK 07 NOv 2020----------*/
