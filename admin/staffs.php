@@ -94,7 +94,7 @@
                                                 <td><?= $mobile; ?></td>
                                                 <td><?= date('d F Y', strtotime($created_at)); ?></td>
                                                 <td><?= $status; ?></td>
-                                                <td><a href="edit-user.php?id=<?php echo base64_encode($id); ?>"><i class="fa fa-edit fa-fw fa-sm text-primary"></i></a><a href="delete-user.php?id=<?php echo base64_encode($id); ?>" onclick="return confirm('Are you sure to remove the user?');"><i class="fa fa-trash fa-fw fa-sm text-danger"></i></a></td>
+                                                <td><a href="edit-user.php?id=<?php echo base64_encode($id); ?>"><i class="fa fa-edit fa-fw fa-sm text-primary"></i></a><a style="cursor:pointer" class="delete_btn" data-table="user" data-id="<?= $id; ?>"><i class="fa fa-trash fa-fw fa-sm text-danger"></i></a></td>
                                             </tr>
                                     <?php
                                         }

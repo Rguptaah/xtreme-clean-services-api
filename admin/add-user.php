@@ -6,7 +6,7 @@
         <div class="page-header">
             <div class="row">
                 <div class="col">
-                    <h3 class="page-title">Add/Edit Admin</h3>
+                    <h3 class="page-title">Add User</h3>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
                     </ul>
@@ -14,19 +14,18 @@
             </div>
         </div>
         <?php
-        $arr = array('id' => $user_id);
-        $res = get_all('user', '*', $arr);
-        $count = null;
-        if ($res['count'] > 0) {
-            $count = $res['count'];
-            foreach ($res['data'] as $row) {
-                $row['count'] = $count;
-                extract($row);
-            }
-        }
-        echo $count;
+        // $res = get_all('user', '*', $arr);
+        // $count = null;
+        // if ($res['count'] > 0) {
+        //     $count = $res['count'];
+        //     foreach ($res['data'] as $row) {
+        //         $row['count'] = $count;
+        //         extract($row);
+        //     }
+        // }
+        // echo $count;
         ?>
-        <form action="" method="POST" enctype="multipart/form-data">
+        <form action="add-user" method="POST" id="add_user_form" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -75,7 +74,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="profile_pic" class="form-label">Add Profile Pic</label>
-                        <input type="file" name="profile_pic" id="profile_pic" class="form-control"></textarea>
+                        <input type="file" name="profile_pic" id="profile_pic" class="form-control">
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -92,7 +91,7 @@
                     <div class="form-group">
                         <label for="status" class="form-label">Status</label>
                         <select name="status" id="status" class="form-control">
-                            <?php foreach ($status as $key => $status) : ?>
+                            <?php foreach ($all_status as $key => $status) : ?>
                                 <option value="<?= $key; ?>"><?= $status; ?></option>
                             <?php endforeach; ?>
                         </select>

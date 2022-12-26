@@ -2,20 +2,20 @@
 <?php require_once('sidebar.php'); ?>
 <div class="page-wrapper">
     <div class="container">
-        <div class="page-header">
+        <div class="page-header mt-5">
             <div class="row">
                 <div class="col">
                     <h3 class="page-title"> Create Tasks</h3>
                 </div>
-                <!-- <div class="col-auto text-right">
-                    <a class="btn btn-white btn-primary btn-md text-white" href="add-tasks.php">
-                        Create task
+                <div class="col-auto text-right">
+                    <a class="btn btn-white btn-primary btn-md text-white" href="manage-tasks.php">
+                        Manage task
                     </a>
-                </div> -->
+                </div>
             </div>
         </div>
 
-        <form action="" method="post" id="task_form">
+        <form action="add-task" method="post" id="task_form">
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -46,7 +46,7 @@
                     <div class="form-group">
                         <label for="priority" class="form-label">Priority</label>
                         <select type="text" id="priority" name="priority" class="form-control">
-                            <?php foreach ($priority as $key => $priority) : ?>
+                            <?php foreach ($task_priority as $key => $priority) : ?>
                                 <option value="<?= $key; ?>"><?= $priority; ?></option>
                             <?php endforeach; ?>
                         </select>

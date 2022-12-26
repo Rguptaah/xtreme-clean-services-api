@@ -34,7 +34,7 @@
                             <h3>Forgot Password? <span><?= $full_name; ?></span></h3>
                             <p class="text-muted">Enter your email to get a password reset link</p>
                         </div>
-                        <form action="">
+                        <form action="forgot-password" id="forgot_password_form" method="POST">
                             <div class="form-group mb-4">
                                 <label class="control-label">Email</label>
                                 <input class="form-control" type="email" placeholder="Enter your mail id">

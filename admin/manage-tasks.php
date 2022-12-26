@@ -3,7 +3,6 @@
 
 <div class="page-wrapper">
     <div class="content container-fluid">
-
         <div class="page-header">
             <div class="row">
                 <div class="col">
@@ -16,50 +15,12 @@
                 </div>
             </div>
         </div>
-
-
-        <!-- <div class="card filter-card" id="filter_inputs">
-            <div class="card-body pb-0">
-                <form>
-                    <div class="row filter-row">
-                        <div class="col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <label>Name</label>
-                                <input class="form-control" type="text">
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <label>From Date</label>
-                                <div class="cal-icon">
-                                    <input class="form-control datetimepicker" type="text">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <label>To Date</label>
-                                <div class="cal-icon">
-                                    <input class="form-control datetimepicker" type="text">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <button class="btn btn-primary btn-block" type="submit">Submit</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div> -->
-
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-center mb-0 datatable">
+                            <table class="table table-hover table-center mb-0 datatable myTable">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -93,7 +54,7 @@
                                                 <td><?= $priority; ?></td>
                                                 <td><?= $property_name; ?></td>
                                                 <td><?= $status; ?></td>
-                                                <td><a href="edit-task.php?id=<?php echo base64_encode($id); ?>"><i class="fa fa-edit fa-fw fa-sm text-primary"></i></a><a href="delete-task.php?id=<?php echo base64_encode($id); ?>" onclick="return confirm('Are you sure to remove the task?');"><i class="fa fa-trash fa-fw fa-sm text-danger"></i></a></td>
+                                                <td><a href="edit-task.php?id=<?php echo base64_encode($id); ?>"><i class="fa fa-edit fa-fw fa-sm text-primary"></i></a><a style="cursor:pointer" class="delete_btn" data-table="tasks" data-id="<?= $id; ?>"><i class="fa fa-trash fa-fw fa-sm text-danger"></i></a></td>
                                             </tr>
                                     <?php
                                             $i++;

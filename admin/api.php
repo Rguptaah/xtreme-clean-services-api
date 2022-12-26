@@ -1,6 +1,5 @@
 <?php
 require_once('../Helpers/lib.php');
-// require_once('../Helpers/functions.php');
 if (isset($_GET['task'])) {
     $task = $_GET['task'];
     if (isset($_SESSION['user_id'])) {
@@ -9,16 +8,15 @@ if (isset($_GET['task'])) {
     switch ($task) {
         case "verify_login":
             extract($_POST);
-            $arr = array('email' => $email, 'password' => md5($password));
+            $arr = array('email' => $email, 'password' => md5($password), 'role' => 'A');
             $res = get_all('user', '*', $arr);
-            if ($res['status'] == 'success' and $res['count'] == 1) {
+            if ($res['status'] == 'success' && $res['count'] == 1) {
                 $sid = $res['data'][0]['id'];
                 $udata = array('token' => $token);
                 $result = update_data('user', $udata, $sid, 'id');
                 $_SESSION['user_id'] = $sid;
                 $_SESSION['user_type'] = $res['data'][0]['role'];
                 $_SESSION['user_name'] = trim($email);
-                //setcookie("username", $_SESSION['user_name'], time()+3600, "/", "",  0);
                 $result['id'] = $sid;
                 $result['status'] = 'success';
                 $result['msg'] = 'Login Success';
@@ -26,44 +24,34 @@ if (isset($_GET['task'])) {
             } else {
                 $result['id'] = 0;
                 $result['status'] = 'fail';
-                $result['msg'] = 'somthing went wrong';
+                $result['msg'] = 'You are not authenticated to login or email and password is wrong';
             }
-            echo json_encode($res);
+            echo json_encode($result);
             break;
         case "logout":
-            // $user_id = $_SESSION['user_id'];
-
-            // unset($_SESSION['user_name']);
-            // unset($_SESSION['user_type']);
             unset($_SESSION['user_id']);
             session_destroy();
             $result['id'] = $user_id;
             $result['status'] = 'success';
-            $result['msg'] = "Logout Success";
-
-            // if (isset($_GET['rtype']) && $_GET['rtype'] == 'url') {
-            //     echo "<script> window.location ='index.php' </script>";
-            // } else {
-            //     $udata = array('token' => '');
-            //     update_data('user', $udata, $user_id, 'user_id');
-            //     echo json_encode($result);
-            // }
-            echo "<script>window.location='login.php'</script>";
+            $result['msg'] = "Logout Success...";
+            $result['url'] = "login.php";
+            echo json_encode($result);
             break;
         case "forget_password":
-            $user_name  = $_POST['user_name'];
+            $user_email  = $_POST['email'];
             //$user_email  =$_POST['user_email'];
-            $result = get_data('tbl_user', $user_name, null, 'user_name');
+            $result = get_data('user', $user_email, null, 'email');
             //print_r($result);
             $res = $result['data'];
             if ($res['user_id']) {
-                $id = $res['user_id'];
-                $user_email = $res['user_email'];
-                $np = rnd_str(6);
-                $up = array('user_pass' => md5($np));
+                $id = $res['id'];
+                // $user_email = $res['email'];
+                $username = $res['first_name'] . " " . $res['last_name'];
+                // $np = rnd_str(6);
+                // $up = array('password' => md5($np));
                 $res = update_data('user', $up, $id, 'user_id');
                 $sms = "Dear " . $user_name . " Your password is " . $np . " Regadrs, " . $inst_name . " " . $inset_url;
-                //mail($user_email,'Password Recover' ,$sms ,$noreply_email);
+                mail($user_email, 'Password Reset Link', $sms, $noreply_email);
                 $data['id'] = $id;
                 $data['status'] = 'success';
                 $data['msg'] = "Your New Password Successfully Send to $user_email";
@@ -74,234 +62,156 @@ if (isset($_GET['task'])) {
             }
             echo json_encode($data);
             break;
-        case "change_password":
-            $user_name = $_POST['user_name'];
-            $current = $_POST['current'];
-            $new1 = $_POST['new1'];
-            $confirm = $_POST['confirm'];
+        case "reset-password":
+            $id = $_POST['id'];
+            $new1 = $_POST['new_password'];
+            $confirm = $_POST['confirm_password'];
             $data['status'] = 'error';
             $data['count'] = 0;
             if ($new1 != $confirm) {
                 $data['msg'] = "New Password and Confirm password doesn't match";
-            } else if ($current == $new1) {
+            } else {
+                $data = update_data('user', array('password' => md5($confirm)), $id);
+            }
+            echo json_encode($data);
+            break;
+        case "change-password":
+            $id = $_POST['id'];
+            $old = $_POST['old_password'];
+            $new1 = $_POST['new_password'];
+            $confirm = $_POST['confirm_password'];
+            $data['status'] = 'error';
+            $data['count'] = 0;
+            if ($new1 != $confirm) {
+                $data['msg'] = "New Password and Confirm password doesn't match";
+            } else if ($old == $new1) {
                 $data['msg'] = "New Password Current password can't be same";
             } else {
-                $data = update_data('tbl_user', array('user_pass' => md5($confirm)), $user_name, 'user_name');
+                $data = update_data('user', array('password' => md5($confirm)), $id);
             }
             echo json_encode($data);
             break;
 
         case "master_delete": // Delete Any Data From Table 
             extract($_POST);
-            $res = remove_data($table, $id, $pkey);
+            $res = remove_data($table, $id);
             if (isset($url)) {
                 $res['url'] = $url;
             }
             echo json_encode($res);
             break;
+        case "add-user":
+            unset($_POST['confirm_password']);
+            $is_upload = 1;
+            $upload_dir = "uploads/";
+            if (!empty($_FILES)) {
+                $file_name = $_FILES['profile_pic']['name'];
+                $file_tmp_name = $_FILES['profile_pic']['tmp_name'];
+                $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                $allowed_extension = array('jpg', 'jpeg', 'png', 'gif', 'webp');
+                $new_file_name = time() . rand(10000, 99999) . "." . $file_extension;
+                $target_file = $upload_dir . $new_file_name;
+                if (in_array($file_extension, $allowed_extension)) {
+                    if (move_uploaded_file($file_tmp_name, $target_file)) {
+                        $_POST['profile_pic'] = $target_file;
+                    } else {
+                        $is_upload = 0;
+                        $res['status'] = "error";
+                        $res['msg'] = "File cannot be uploaded.Please Try Again";
+                        break;
+                    }
+                } else {
+                    $is_upload = 0;
+                    $res['status'] = "error";
+                    $res['msg'] = "Sorry! File must be of type (jpg,jpeg,png,gif or webp)";
+                    break;
+                }
+            }
+            $res = insert_data('user', $_POST);
+            echo json_encode($res);
+            break;
         case "edit-user":
-            //print_r($_POST);
+            $is_upload = 1;
+            $upload_dir = "uploads/";
+            if (!empty($_FILES)) {
+                $file_name = $_FILES['profile_pic']['name'];
+                $file_tmp_name = $_FILES['profile_pic']['tmp_name'];
+                $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                $allowed_extension = array('jpg', 'jpeg', 'png', 'gif', 'webp');
+                $new_file_name = time() . rand(10000, 99999) . "." . $file_extension;
+                $target_file = $upload_dir . $new_file_name;
+                if (in_array($file_extension, $allowed_extension)) {
+                    if (move_uploaded_file($file_tmp_name, $target_file)) {
+                        $_POST['profile_pic'] = $target_file;
+                    } else {
+                        $is_upload = 0;
+                        $res['status'] = "error";
+                        $res['msg'] = "File cannot be uploaded.Please Try Again";
+                        break;
+                    }
+                } else {
+                    $is_upload = 0;
+                    $res['status'] = "error";
+                    $res['msg'] = "Sorry! File must be of type (jpg,jpeg,png,gif or webp)";
+                    break;
+                }
+            }
             $res = update_data('user', $_POST, $_POST['id']);
             echo json_encode($res);
             break;
-
-            /*------NEW TASK 07 NOv 2020----------*/
-
-        case "update_status": // Update Status Data From Table 
-            extract($_POST);
-            print_r($_POST);
-            $st = $_POST['data_status'];
-            $sid = $_POST['sid'];
-            $bdata = array('status' => $st);
-            foreach ($sid as $id) {
-                if ($st == 'DELETE') {
-                    $res = delete_data($table, $id, 'id');
+        case "add-task":
+            $table_name = "tasks";
+            $res = insert_data($table_name, $_POST);
+            $res['url'] = 'manage-tasks.php';
+            echo json_encode($res);
+            break;
+        case "edit-task":
+            $res = update_data('tasks', $_POST, $_POST['id']);
+            echo json_encode($res);
+            break;
+        case "add-service":
+            $table_name = "services";
+            $is_upload  = 1;
+            $image_arr = [];
+            $upload_dir = "uploads/";
+            if (!empty($_FILES)) {
+                for ($i = 0; $i < count($_FILES['image_gallery']['name']); $i++) {
+                    $file_name = $_FILES['image_gallery']['name'][$i];
+                    $file_tmp_name = $_FILES['image_gallery']['tmp_name'][$i];
+                    $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                    $allowed_extension = array('jpg', 'jpeg', 'png', 'gif', 'webp');
+                    $new_file_name = time() . rand(10000, 99999) . "." . $file_extension;
+                    $target_file = $upload_dir . $new_file_name;
+                    if (in_array($file_extension, $allowed_extension)) {
+                        if (move_uploaded_file($file_tmp_name, $target_file)) {
+                            $image_arr[] = $target_file;
+                        } else {
+                            $is_upload = 0;
+                            $res['status'] = "error";
+                            $res['msg'] = "File cannot be uploaded.Please Try Again";
+                            break;
+                        }
+                    } else {
+                        $is_upload = 0;
+                        $res['status'] = "error";
+                        $res['msg'] = "Sorry! File must be of type (jpg,jpeg,png,gif or webp)";
+                        break;
+                    }
+                }
+                if ($is_upload == 0) {
+                    echo json_encode($res);
                 } else {
-                    $res = update_data($table, $bdata, $id, 'id');
+                    $_POST['image_gallery'] = implode(",", $image_arr);
+                    $res = insert_data($table_name, $_POST);
+                    $res['url'] = 'services.php';
+                    echo json_encode($res);
                 }
-            }
-            echo json_encode($res);
-            break;
-
-        case "bulk_import":
-            extract($_POST);
-            //print_r($_POST);
-            $res = csvimport($table, $pkey);
-            echo "<script> window.location='bulk_update.php?msg=" . $res['msg'] . "' </script>";
-            break;
-
-        case "bulk_export":
-            if ($_SESSION['user_type'] == 'ADMIN') {
-                $table = $_REQUEST['table'];
-                if (isset($_REQUEST['col_name'])) {
-                    csvexport($table, "id, name, stock, rate");
-                } else {
-                    csvexport($table);
-                }
-            }
-            break;
-
-        case "active_block": // Active of Block Selected Records 
-            print_r($_POST);
-            extract($_POST);
-            $bdata = array('status' => $status);
-            foreach ($id as $i) {
-                $res = update_data($table, $bdata, $i, $pkey);
-            }
-            echo json_encode($res);
-            break;
-
-        case "master_block": // BLOCK Any Data From Table 
-            extract($_POST);
-            //print_r($_POST);
-            $bdata = array('status' => 'BLOCK');
-            $res = update_data($table, $bdata, $id, $pkey);
-            echo json_encode($res);
-            break;
-
-        case "get_data": // Return Single Value form Database
-            extract($_POST);
-            $res = get_data($table, $id, $col);
-            echo json_encode($res);
-            break;
-
-        case "get_dist":
-            $code = $_GET['state_id'];
-            $res = get_all('tbl_district', '*', array('state_id' => $code), 'district_name')['data'];
-            foreach ($res as $dist) {
-                echo "<option value='" . $dist['district_id'] . "'>" . $dist['district_name'] . "</option>";
-            }
-            break;
-
-        case "get_block":
-            $code = $_GET['district_id'];
-            $res = get_all('tbl_block', '*', array('district_id' => $code), 'block_name')['data'];
-            foreach ($res as $dist) {
-                echo "<option value='" . $dist['block_id'] . "'>" . $dist['block_name'] . "</option>";
-            }
-            break;
-
-
-
-        case "update_tech":
-            extract($_POST);
-
-            unset($_POST['isedit']);
-            if ($isedit == 'yes') {
-                $url = 'manage_tech';
             } else {
-                $url = 'add_tech';
+                $res['status'] = "error";
+                $res['msg'] = "Please choose file for image gallery";
+                echo json_encode($res);
             }
-            $res = update_data('tbl_tech', $_POST, $id);
-            $res['url'] = $url;
-            echo json_encode($res);
             break;
-
-        case "update_customer":
-            extract($_POST);
-
-            unset($_POST['isedit']);
-            if ($isedit == 'yes') {
-                $url = 'manage_customer';
-            } else {
-                $url = 'add_customer';
-            }
-            $res = update_data('tbl_customer', $_POST, $id);
-            $res['url'] = $url;
-            echo json_encode($res);
-            break;
-
-        case "update_req":
-            extract($_POST);
-
-            unset($_POST['isedit']);
-            if ($isedit == 'yes') {
-                $url = 'manage_request';
-            } else {
-                $url = 'add_request';
-            }
-            $res = update_data('tbl_request', $_POST, $id);
-            $res['url'] = $url;
-            echo json_encode($res);
-            break;
-
-
-        case "update_medicine":
-            extract($_POST);
-            unset($_POST['isedit']);
-            if ($isedit == 'yes') {
-                $url = 'manage_medicine';
-            } else {
-                $url = 'add_medicine';
-            }
-            $res = update_data('tbl_medicine', $_POST, $id);
-            $res['url'] = $url;
-            echo json_encode($res);
-            break;
-
-
-        case "assign_medicine":
-            extract($_POST);
-            $mlist = get_data('tbl_patient', $id, 'medicine_list')['data'];
-            $_POST['doctor_id'] = $user_id;
-            if ($mlist != '') {
-                $mlist = $mlist . "," . $medicine_list;
-                $_POST['medicine_list'] = $mlist;
-            }
-            $res = update_data('tbl_patient', $_POST, $id);
-            $res['url'] = "assign_medicine.php?patient_id=$id";
-            echo json_encode($res);
-            break;
-
-        case "remove_medicine":
-            extract($_REQUEST);
-            unset($_REQUEST['task']);
-            $mlist = get_data('tbl_patient', $id, 'medicine_list')['data'];
-            $mlist = removeFromString($mlist, $medicine_id);
-            $res = update_data('tbl_patient', array('medicine_list' => $mlist), $id);
-            header("Location:" . $_SERVER['HTTP_REFERER']);
-            echo json_encode($res);
-            break;
-
-        case "clear_medicine":
-            extract($_GET);
-            $res = update_data('tbl_patient', array('medicine_list' => '0'), $id);
-            header("Location:" . $_SERVER['HTTP_REFERER']);
-            echo json_encode($res);
-            break;
-
-
-        case "confirm_enquiry":
-            $enq = get_data('tbl_enquiry', $_GET['id'])['data'];
-            $insert = " INSERT into tbl_user (`full_name`,`user_type`, `user_mobile`,`user_name`,`user_email`)  VALUES ( '$name', '$user_type', '$mobile', '$name', '$email' ) ";
-            $idata = array('full_name' => $enq['name'], 'user_type' => $enq['user_type'], 'user_mobile' => $enq['mobile'], 'user_email' => $enq['email']);
-            extract($idata);
-            $res = insert_data('tbl_user', $idata);
-            $user_type = array_search(strtoupper($enq['user_type']),  $user_type_list);
-            $user_name = 'HL' . $user_type . str_pad($res['id'], 5, "0", STR_PAD_LEFT);
-            $pass = rand(100000, 999999);
-            $res2 = update_data('tbl_user', array('user_type' => $user_type, 'user_name' => $user_name, 'user_pass' => md5($pass), 'user_otp' => $pass, 'status' => 'ACTIVE'), $res['id']);
-            //print_r($res2);
-            if ($res2['status'] == 'success') {
-                update_data('tbl_enquiry', array('status' => 'CLOSED'), $_GET['id']);
-            }
-            $sms = $full_name . " thanks for joining as $user_type_list[$user_type] \n Username :" . $user_name . " \nPassword : " . $pass;
-            if ($user_email != '') {
-                $info = "<table rules='1' align='center' width='70%' cellpadding='5'>";
-                foreach ($_POST as $key => $value) {
-                    $info = $info . "<tr><td>" . addspace($key) . "</td><td>" . $value . "</td></tr>";
-                }
-                $info = $info . "</table>";
-                $email = $ms . "<hr>" . $info;
-                rtfmail($user_email, "Hi ! " . $name . " Greetings form " . $inst_name, $email);
-            }
-            if ($user_mobile != '') {
-                //sendsms($user_mobile, $sms);
-            }
-            //echo json_encode($res);
-            header("Location:manage_enquiry.php");
-            break;
-
         default:
             echo "Invalid Action";
     }

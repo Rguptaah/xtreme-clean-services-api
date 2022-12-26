@@ -30,6 +30,18 @@ if ($res['count'] == 1) {
                     <div class="card-body">
                         <form action="edit-user" method="post" id="edit_user_form">
                             <div class="row">
+                                <div class="col-md-12">
+                                    <?php if (!empty($profile_pic)) : ?>
+                                        <div>
+                                            <img src="<?= $site_url . "/" . $profile_pic; ?>" alt="profile" style="width:100px;height:100px;border-radius:50%;" />
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="form-group">
+                                        <label for="profile_pic" class="form-label">Profile Picture</label>
+                                        <input type="file" name="profile_pic" id="profile_pic" class="form-control">
+                                    </div>
+
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">First Name</label>
@@ -63,8 +75,12 @@ if ($res['count'] == 1) {
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="">Status</label>
-                                        <input type="text" class="form-control" name="status" value="<?= !empty($status) ? $status : ""; ?>">
+                                        <label for="status" class="form-label">Status</label>
+                                        <select id="status" name="status" class="form-control">
+                                            <?php foreach ($all_status as $key => $all_status) : ?>
+                                                <option value="<?= $key; ?>" <?= ($key == $status) ? "selected" : ""; ?>><?= $all_status; ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-12">

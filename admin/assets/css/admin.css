@@ -2646,11 +2646,11 @@ html.menu-opened body {
 	border-radius: 10px;
 	color: #fff;
 	display: inline-flex;
-	font-size: 40px;
-	height: 80px;
+	font-size: 25px;
+	height: 50px;
 	justify-content: center;
 	text-align: center;
-	width: 80px;
+	width: 50px;
 	background-color: #ff0080;
 }
 
@@ -5180,6 +5180,14 @@ table.table-inbox tbody tr.checked {
 .lock-user img {
 	margin-bottom: 15px;
 	width: 100px;
+}
+
+.error {
+	color: red;
+}
+
+.btn-link {
+	color: #e60073;
 }
 
 /*-----------------

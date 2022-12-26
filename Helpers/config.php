@@ -19,8 +19,8 @@ $CONFIG['site_email'] = "";
 $CONFIG['site_logo'] = "";
 $CONFIG['white_logo'] = "";
 $CONFIG['banner'] = "";
-$CONFIG['inst_url'] = "http://127.0.0.1/xtreme-clean";
-$CONFIG['inst_type'] = "Service Provider";
+$CONFIG['site_url'] = "http://127.0.0.1/xstream-services/admin";
+$CONFIG['site_type'] = "Service Provider";
 $CONFIG['sender_id'] = "";
 $CONFIG['noreply_email'] = "";
 $CONFIG['auth_key'] = "";
@@ -55,8 +55,8 @@ $CONFIG['base_url'] = 'https://app.breezeway.io/rep/schedule';
 /*-------End of Basic Details ---------*/
 
 /*------------ Details of API -----------------*/
-$CONFIG['status'] = ['pending' => 'Pending', 'active' => 'Active', 'blocked' => 'Blocked'];
+$CONFIG['all_status'] = ['pending' => 'Pending', 'active' => 'Active', 'blocked' => 'Blocked'];
 $CONFIG['role'] = ['A' => 'Admin', 'S' => 'Staff', 'U' => 'Customer'];
-$CONFIG['priority'] = ['low' => 'LOW', 'medium' => 'Medium', 'high' => 'HIGH'];
-$CONFIG['task_status'] = ['overdue' => 'OVERDUE', 'pending' => 'PENDING', 'active' => 'ACTIVE', 'finished' => 'FINISHED'];
+$CONFIG['task_priority'] = ['low' => 'Low', 'medium' => 'Medium', 'high' => 'High'];
+$CONFIG['task_status'] = ['overdue' => 'Overdue', 'pending' => 'Pending', 'active' => 'Active', 'finished' => 'Finished'];
 extract($CONFIG);

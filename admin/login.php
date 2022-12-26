@@ -10,7 +10,7 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <title>Login | Xtreme Clean and Carpet Care</title>
+    <title>Login | <?= $full_name; ?></title>
 
     <link rel="shortcut icon" href="assets/img/favicon.png">
 
@@ -39,7 +39,7 @@ if (isset($_SESSION['user_id'])) {
                             <h3>Login <span><?= $full_name; ?></span></h3>
                             <p class="text-muted">Access to our dashboard</p>
                         </div>
-                        <form action="" id="login_frm">
+                        <form action="verify_login" id="login_frm">
                             <div class="form-group">
                                 <label class="control-label">Username or Email</label>
                                 <input class="form-control" type="text" name="email" placeholder="Enter your username or email">
@@ -53,7 +53,6 @@ if (isset($_SESSION['user_id'])) {
                             </div>
                         </form>
                         <div class="text-center forgotpass mt-4"><a href="forgot-password.php">Forgot Password?</a></div>
-                        <!-- <div class="text-center dont-have">Don’t have an account? <a href="register.php">Register</a></div> -->
                     </div>
                 </div>
             </div>

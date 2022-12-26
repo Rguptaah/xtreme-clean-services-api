@@ -335,19 +335,11 @@ function insert_row($table_name)
 function insert_data($table_name, $ArrayData)
 {
     global $con;
-    global $user_id;
-    global $current_date_time;
-    //echo"<pre>";
-    //print_r($ArrayData);
-    $ArrayData['created_by'] = $user_id;
-    $ArrayData['created_at'] = $current_date_time;
-
     $columns = implode(", ", array_keys($ArrayData));
     $escaped_values = array_values($ArrayData);
     foreach ($escaped_values as $newvalue) {
         $newvalues[] = "'" . post_clean($newvalue) . "'";
     }
-    //$data = mysqli_escape_string ($escaped_values);
     $values  = implode(", ", $newvalues);
 
     $sql = "INSERT IGNORE INTO $table_name ($columns) VALUES ($values)";
@@ -406,11 +398,6 @@ function insert_html($table_name, $ArrayData)
 function update_data($table_name, $ArrayData, $id, $pkey = 'id')
 {
     global $con;
-    // global $user_id;
-    // global $current_date_time;
-
-    // $ArrayData['updated_at'] = $current_date_time;
-    // $ArrayData['updated_by'] = $user_id;
 
     $cols = array();
     foreach ($ArrayData as $key => $value) {
@@ -471,10 +458,8 @@ function update_multi_data($table_name, $ArrayData, $whereArr)
 function remove_data($table_name, $id, $pkey = 'id')
 {
     global $con;
-    global $user_id;
-    global $current_date_time;
 
-    $sql = "UPDATE $table_name SET status = 'DELETED' , updated_by = '$user_id', updated_at ='$current_date_time' WHERE $pkey  ='" . $id . "'";
+    $sql = "UPDATE $table_name SET status = 'DELETED' WHERE $pkey  ='" . $id . "'";
     $res = mysqli_query($con, $sql) or die("Error in Deleting Data" . mysqli_error($con));
     $num = mysqli_affected_rows($con);
     if ($num >= 1) {

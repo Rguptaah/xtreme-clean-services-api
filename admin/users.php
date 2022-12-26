@@ -66,36 +66,52 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Contact No</th>
-                                        <th>Created on</th>
+                                        <th>Role</th>
                                         <th>Status</th>
+                                        <th>Created on</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                                     $i = 1;
-                                    $res = get_all('user');
+                                    $res = direct_sql("SELECT * from user where status not in('DELETED') order by id DESC");
                                     if ($res['count'] > 0) {
                                         foreach ($res['data'] as $row) {
                                             extract($row);
+                                            if ($role == 'A') {
+                                                $role = "Admin";
+                                            } else if ($role == 'S') {
+                                                $role = "Staff";
+                                            } else {
+                                                $role = "User";
+                                            }
                                     ?>
                                             <tr>
                                                 <td><?= $i; ?></td>
                                                 <td>
                                                     <h2 class="table-avatar">
-                                                        <a href="#" class="avatar avatar-sm mr-2">
-                                                            <img class="avatar-img rounded-circle" src="assets/img/customer/user-01.jpg" alt="<?= $firstname . " " . $lastname; ?>">
-                                                        </a>
+                                                        <?php if (empty($profile_pic)) : ?>
+                                                            <a href="#" class="avatar avatar-sm mr-2">
+                                                                <img class="avatar-img rounded-circle" src="assets/img/customer/user-01.jpg" alt="<?= $firstname . " " . $lastname; ?>">
+                                                            </a>
+                                                        <?php else : ?>
+                                                            <a href="<?= $site_url . "/" . $profile_pic; ?>" class="avatar avatar-sm mr-2">
+                                                                <img class="avatar-img rounded-circle" src="<?= $site_url . "/" . $profile_pic; ?>" alt="<?= $firstname . " " . $lastname; ?>">
+                                                            </a>
+                                                        <?php endif; ?>
                                                         <a href="#"><?= $firstname . " " . $lastname; ?></a>
                                                     </h2>
                                                 </td>
                                                 <td><a href="mailto:<?= $email; ?>"><?= $email; ?></a></td>
-                                                <td><?= $mobile; ?></td>
-                                                <td><?= date('d F Y', strtotime($created_at)); ?></td>
+                                                <td><?= "<a href='tel:$mobile'>" . $mobile . "</a>"; ?></td>
+                                                <td><?= $role; ?></td>
                                                 <td><?= $status; ?></td>
-                                                <td><a href="edit-user.php?id=<?php echo base64_encode($id); ?>"><i class="fa fa-edit fa-fw fa-sm text-primary"></i></a><a href="delete-user.php?id=<?php echo base64_encode($id); ?>" onclick="return confirm('Are you sure to remove the user?');"><i class="fa fa-trash fa-fw fa-sm text-danger"></i></a></td>
+                                                <td><?= date('d F Y', strtotime($created_at)); ?></td>
+                                                <td><a href="edit-user.php?id=<?php echo base64_encode($id); ?>"><i class="fa fa-edit fa-fw fa-sm text-primary"></i></a><a style="cursor:pointer" class="delete_btn" data-table="user" data-id="<?= $id; ?>"><i class="fa fa-trash fa-fw fa-sm text-danger"></i></a></td>
                                             </tr>
                                     <?php
+                                            $i++;
                                         }
                                     }
                                     ?>

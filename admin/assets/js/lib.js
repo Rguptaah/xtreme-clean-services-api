@@ -1,5 +1,4 @@
 /* Custom Js By Codeflies*/
-
 //==========EDIT USER FORM================//
 $('#edit-user').click(function (e) {
     e.preventDefault();
@@ -8,14 +7,18 @@ $('#edit-user').click(function (e) {
         var task = $("#edit_user_form").attr('action');
         $(this).attr("disabled", true);
         $(this).html("<i class='fa fa-refresh fa-spin'></i> Please Wait...");
-        var data = $("#edit_user_form").serialize();
+        // var data = $("#edit_user_form").serialize();
+        var form_data = document.getElementById('edit_user_form');
+        var data = new FormData(form_data);
         $.ajax({
-            'type': 'POST',
-            'url': 'api.php?task=' + task,
-            'data': data,
+            type: 'POST',
+            url: 'api.php?task=' + task,
+            data: data,
+            contentType: false,
+            cache: false,
+            processData: false,
             success: function (data) {
                 console.log(data);
-                //alert(data);
                 var obj = JSON.parse(data);
                 if (obj.url != null) {
                     bootbox.alert(obj.msg, function () {
@@ -38,19 +41,43 @@ $('#edit-user').click(function (e) {
 })
 
 //=====INSERT BUTTON =========//
-$("#insert_btn").on('click', function () {
+$("#add-task").on('click', function (e) {
+    e.preventDefault();
+    $("#task_form").validate({
+        rules: {
+            task_detail: {
+                required: true
+            },
+            staff_id: {
+                required: true
+            },
+            priority: {
+                required: true
+            },
+            property_name: {
+                required: true
+            },
+            status: {
+                required: true
+            },
+            check_out: {
+                required: true
+            },
+            next_check_in: {
+                required: true
+            }
+        }
+    });
 
-    $("#insert_frm").validate();
+    if ($("#task_form").valid()) {
 
-    if ($("#insert_frm").valid()) {
-
-        var task = $("#insert_frm").attr('action');
+        var task = $("#task_form").attr('action');
         $(this).attr("disabled", true);
         $(this).html("<i class='fa fa-refresh fa-spin'></i> Please Wait...");
-        var data = $("#insert_frm").serialize();
+        var data = $("#task_form").serialize();
         $.ajax({
             'type': 'POST',
-            'url': 'master_process?task=' + task,
+            'url': 'api.php?task=' + task,
             'data': data,
             success: function (data) {
                 console.log(data);
@@ -66,13 +93,13 @@ $("#insert_btn").on('click', function () {
                 }
                 else {
                     $.notify(obj.msg, obj.status);
-                    $("#insert_btn").html(" <i class='fa fa-check-circle'></i> Saved Succesfully");
+                    $("#add-task").html(" <i class='fa fa-check-circle'></i> Saved Succesfully");
 
                 }
-                $('#insert_frm')[0].reset();
+                $('#task_form')[0].reset();
                 setTimeout(function () {
-                    $("#insert_btn").attr("disabled", false);
-                    $("#insert_btn").html("Submit Details");
+                    $("#add-task").attr("disabled", false);
+                    $("#add-task").html("Save");
                 }, 2000);
 
 
@@ -83,7 +110,142 @@ $("#insert_btn").on('click', function () {
     }
 });
 
+$("#add-service").on('click', function (e) {
+    e.preventDefault();
+    $("#service_form").validate({
+        rules: {
+            title: {
+                required: true
+            },
+            service_details: {
+                required: true
+            },
+            image_gallery: {
+                required: true,
+                accept: "image/*"
+            },
+            status: {
+                required: true
+            }
+        }
+    });
 
+    if ($("#service_form").valid()) {
+
+        var task = $("#service_form").attr('action');
+        $(this).attr("disabled", true);
+        $(this).html("<i class='fa fa-refresh fa-spin'></i> Please Wait...");
+        // var data = $("#service_form").serialize();
+        let upload_form = document.getElementById("service_form");
+        var data = new FormData(upload_form);
+        $.ajax({
+            type: 'POST',
+            url: 'api.php?task=' + task,
+            contentType: false,
+            cache: false,
+            processData: false,
+            data: data,
+            success: function (data) {
+                console.log(data);
+                //alert(data);
+                var obj = JSON.parse(data);
+                if (obj.url != null) {
+                    bootbox.alert(obj.msg, function () {
+                        window.location.replace(obj.url);
+                    });
+                }
+                else {
+                    $.notify(obj.msg, obj.status);
+                    // $("#add-service").html(" <i class='fa fa-check-circle'></i> Saved Succesfully");
+
+                }
+                $('#service_form')[0].reset();
+                setTimeout(function () {
+                    $("#add-service").attr("disabled", false);
+                    $("#add-service").html("Save");
+                }, 2000);
+
+
+            }
+
+        });
+
+    }
+});
+
+$("#add-user").on('click', function (e) {
+    e.preventDefault();
+    $("#add_user_form").validate({
+        rules: {
+            first_name: {
+                required: true
+            },
+            last_name: {
+                required: true
+            },
+            email: {
+                required: true,
+                accept: "image/*"
+            },
+            password: {
+                minlength: 8
+            },
+            confirm_password: {
+                minlength: 8,
+                equalTo: "#password"
+            },
+            role: {
+                required: true
+            },
+            profile_pic: {
+                required: true,
+                accept: "image/png,image/jpg,image/jpeg,image/gif,image/webp"
+            }
+        }
+    });
+
+    if ($("#add_user_form").valid()) {
+
+        var task = $("#add_user_form").attr('action');
+        $(this).attr("disabled", true);
+        $(this).html("<i class='fa fa-refresh fa-spin'></i> Please Wait...");
+        // var data = $("#add_user_form").serialize();
+        let upload_form = document.getElementById("add_user_form");
+        var data = new FormData(upload_form);
+        $.ajax({
+            type: 'POST',
+            url: 'api.php?task=' + task,
+            contentType: false,
+            cache: false,
+            processData: false,
+            data: data,
+            success: function (data) {
+                console.log(data);
+                //alert(data);
+                var obj = JSON.parse(data);
+                if (obj.url != null) {
+                    bootbox.alert(obj.msg, function () {
+                        window.location.replace(obj.url);
+                    });
+                }
+                else {
+                    $.notify(obj.msg, obj.status);
+                    // $("#add-service").html(" <i class='fa fa-check-circle'></i> Saved Succesfully");
+
+                }
+                $('#add_user_form')[0].reset();
+                setTimeout(function () {
+                    $("#add-user").attr("disabled", false);
+                    $("#add-user").html("Save");
+                }, 2000);
+
+
+            }
+
+        });
+
+    }
+});
 //=====UPDATE BUTTON =========//
 $("#update_btn").click(function () {
     $("#update_frm").validate();
@@ -96,6 +258,7 @@ $("#update_btn").click(function () {
         $.ajax({
             'type': 'POST',
             'url': 'master_process?task=' + task,
+
             'data': data,
             success: function (data) {
                 console.log(data);
@@ -126,11 +289,8 @@ $("#update_btn").click(function () {
 
 //=====DELETE BUTTON =========//
 $(".delete_btn").on('click', function () {
-    var del_row = $($(this).closest("tr"));
     var id = $(this).attr("data-id");
     var table = $(this).attr("data-table");
-    var pkey = $(this).attr("data-pkey");
-    var url = $(this).attr("data-url");
     bootbox.confirm({
         message: "Do you really want to delete this?",
         buttons:
@@ -148,8 +308,8 @@ $(".delete_btn").on('click', function () {
             if (result == true) {
                 $.ajax({
                     'type': 'POST',
-                    'url': 'master_process?task=master_delete',
-                    'data': { 'id': id, 'table': table, 'pkey': pkey, 'url': url },
+                    'url': 'api.php?task=master_delete',
+                    'data': { 'id': id, 'table': table },
                     success: function (data) {
                         //alert(data);
                         var obj = JSON.parse(data);
@@ -160,8 +320,9 @@ $(".delete_btn").on('click', function () {
                         }
                         else {
                             $.notify(obj.msg, obj.status);
-                            del_row.hide(500);
+                            // del_row.hide(500);
                         }
+                        location.reload(true);
                     }
                 });
             }
@@ -342,6 +503,7 @@ $("#login-btn").click(function (e) {
     $("#login_frm").validate();
 
     if ($("#login_frm").valid()) {
+        // var task = $("#login_frm").attr('action');
         $(this).attr("disabled", true);
         $(this).html("Please Wait...");
         var data = $("#login_frm").serialize();
@@ -362,7 +524,7 @@ $("#login-btn").click(function (e) {
                 }
                 else {
                     // alert("not success");
-                    $.notify("Sorry Some Thing Went Wrong", "error");
+                    $.notify(obj.msg, "error");
                     $("#login_frm")[0].reset();
                     $("#login-btn").html("Secure Login");
                     $("#login-btn").attr("disabled", false);
@@ -482,7 +644,7 @@ function ajax_call(url, data, target) {
 //===========LOGOUT WITH CONFIRAMTION ==========//
 function logout() {
     bootbox.confirm({
-        message: "You you really want to logout ?",
+        message: "Do you really want to logout ?",
         buttons:
         {
             confirm: {
@@ -498,13 +660,17 @@ function logout() {
             if (result == true) {
                 $.ajax({
                     'type': 'POST',
-                    'url': 'master_process?task=logout',
+                    'url': 'api.php?task=logout',
                     success: function (data) {
                         //alert(data);
                         var obj = JSON.parse(data);
-
-                        window.location = 'login';
-                        $.notify(obj.msg, obj.status);
+                        if (obj.url != null) {
+                            bootbox.alert(obj.msg, function () {
+                                window.location.replace(obj.url);
+                            });
+                        } else {
+                            $.notify(obj.msg, obj.status);
+                        }
                     }
                 });
             }
@@ -536,14 +702,13 @@ $("#add_btn").click(function () {
 
 //======FORGET PASSWORD USING PROMPT BOX =======/
 $("#forget_password").click(function () {
-    bootbox.prompt("Enter Username ", function (data) {
+    bootbox.prompt("Enter email to reset password", function (data) {
         if (data) {
             $.ajax({
                 'type': 'POST',
-                'url': 'master_process?task=forget_password',
-                'data': 'user_name=' + data,
+                'url': 'api.php?task=forget_password',
+                'data': 'email=' + email,
                 success: function (data) {
-                    //alert(data);
                     var obj = JSON.parse(data);
                     $.notify(obj.msg, obj.status);
                 }
@@ -552,37 +717,81 @@ $("#forget_password").click(function () {
     });
 });
 
+$("#reset-password").click(function (e) {
+    e.preventDefault();
+    $("#forgot_password_form").validate({
+        rules: {
+            new_password: {
+                minlength: 8
+            },
+            confirm_password: {
+                minlength: 8,
+                equalTo: "#confirm_password"
+            }
+        }
+    })
+    if ($("#forgot_password_form").valid()) {
+        $(this).attr("disabled", true);
+        $(this).html("Please Wait....");
+        let data = $("#forgot_password_form").serialize();
+        let task = $("#forgot_password_form").attr('action');
+        $.ajax({
+            type: "POST",
+            url: 'api.php?task=' + task,
+            data: data,
+            success: function (data) {
+                console.log(data);
+                let obj = JSON.parse(data);
+                if (obj.url != null) {
+                    bootbox.alert(obj.msg, function () {
+                        window.location.replace(obj.url);
+                    });
+                } else {
+                    $.notify(obj.msg, obj.status);
+                    $("#forgot_password_form")[0].reset();
+                    $("#reset-password").attr("disabled", false);
+                    $('#reset-password').html("Reset Password");
+                }
+            }
 
+        })
+    }
+})
 //======Change PASSWORD of Logged In User =======/
-$("#change_password").click(function () {
+$("#change-password").click(function () {
     $(this).attr("disabled", true);
     $(this).html("Please Wait...");
-    $("#update_frm").validate();
+    $("#change_password_form").validate();
 
-    if ($("#update_frm").valid()) {
-        var cp = $("#current_password").val();
+    if ($("#change_password_form").valid()) {
+        var op = $("#old_password").val();
         var np = $("#new_password").val();
-        var rp = $("#repeat_password").val();
-        if (np != rp) {
-            $.notify("New password and Repeat password Not matched", "error");
-
+        var cp = $("#confirm_password").val();
+        var id = $("#id").val();
+        if (np != cp) {
+            $.notify("New password and Confirm password Not matched", "error");
+            // location.reload();
+        }
+        else if (op == np) {
+            $.notify("New password and Old password must be different", "error");
+            // location.reload();
         }
         else {
             $.ajax({
                 'type': 'POST',
-                'url': 'master_process?task=change_password',
-                'data': 'new_password=' + np + '&current_password=' + cp,
+                'url': 'api.php?task=change-password',
+                data: { new_password: np, old_password: op, confirm_password: cp, id: id },
                 success: function (data) {
                     ////alert(data);
                     var obj = JSON.parse(data);
                     if (obj.status.trim() == 'success') {
                         $.notify("Password Changed Succesfully", obj.status);
-                        $("#update_frm")[0].reset();
+                        $("#change_password_form")[0].reset();
                         logout();
                     }
                     else {
                         $.notify("Sorry! Unable to Chanage Password ", "error");
-                        $("#update_frm")[0].reset();
+                        $("#change_password_form")[0].reset();
                         $("#change_password").attr("disabled", false);
                     }
                 }
@@ -666,17 +875,6 @@ $("#add_item_btn").on('click', function () {
             success: function (data) {
                 var obj = JSON.parse(data);
                 location.reload(true);
-                // if(obj.url!= null)
-                // {
-                // bootbox.alert(obj.msg, function(){ 
-                // window.location.replace(obj.url);
-                // });	
-                // }
-                // else{
-                // $.notify(obj.msg, obj.status);
-                // }
-
-                //window.location.replace(obj.url);
                 $("#add_item_btn").html("Add Item");
                 $("#add_item_btn").removeAttr("disabled");
             }
